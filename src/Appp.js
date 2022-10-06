@@ -1,30 +1,35 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import './App.css';
 
-function App() {
+function Appp() {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
-  const clickCount = useRef(0);
-  const [restarted, setReStart] = useState(false);
-  const [running, setRunning] = useState(false);
-  
-
   const [enteredMin, setEnteredMin] = useState(0);
   const [enteredSec, setEnteredSec] = useState(0);
+
+
   const [start, setStart] = useState(false);
+  const [pause, setPause] = useState(false);
+  const [running, setRunning] = useState(true);
+  
+  const toggleRunning = useCallback(
+    () => setRunning(run => !run)
+  , []);
 
 
 
 
 
 
-  let interval;
+  const Countdown = () => {
 
+    useEffect(() => {
+      let interval ;
+      if(!running) {
+        clearInterval(interval);
+        return;
+      }else{
 
-  useEffect(() => {
-
-    if (restarted) {
-      clearInterval(interval);
 
       interval = setInterval(() => {
         clearInterval(interval);
@@ -36,29 +41,18 @@ function App() {
         } else {
           setSeconds(seconds - 1);
         }
+
       }, 1000);
-
-    }else{
-     
-
-      interval = setInterval(() => {
-        clearInterval(interval);
-        if (seconds === 0) {
-          if (minutes !== 0) {
-            setSeconds(59);
-            setMinutes(minutes - 1);
-          }
-        } else {
-          setSeconds(seconds - 1);
-        }
-      }, 1000);
-    
-
     }
-   
+
+    }, [start && seconds]);
+
+  }
 
 
-  }, [running && seconds])
+
+
+
 
 
 
@@ -70,6 +64,9 @@ function App() {
   let extraminutes
 
 
+
+
+
   if (seconds > 60) {
     extraminutes = Math.floor(seconds / 60)
     setMinutes(parseInt(minutes) + parseInt(extraminutes))
@@ -78,40 +75,32 @@ function App() {
 
   let timerSeconds = seconds < 10 ? `0${seconds}` : seconds;
 
+  const startTimerrr = () => {
+    setMinutes(enteredMin)
+    setSeconds(enteredSec)
+    setStart(true)
+    setRunning(true)
+  }
+
+
 
 
   return (
     <div className="App">
-      <input type="number" id="mins" /* defaultValue={ minuteenterd ? minutes:""}*/
+      <input type="number" /* defaultValue={ minuteenterd ? minutes:""}*/
         onInput={(e) => {
           setMinutes(e.target.value)
           setEnteredMin(e.target.value)
         }}></input>
-      <input type="number" id="secs"/*defaultValue={ secenterd ? seconds:""} */ onInput={(e) => {
+      <input type="number" /*defaultValue={ secenterd ? seconds:""} */ onInput={(e) => {
         setSeconds(e.target.value)
         setEnteredSec(e.target.value)
       }}></input>
 
       <button onClick={() => {
-        clickCount.current = clickCount.current + 1
-        setStart(true)
-        setRunning(true)
-        
-
-     if(clickCount.current > 1){
-       setStart(false)
-       setMinutes(enteredMin)
-       setSeconds(enteredSec)
-       document.getElementById("mins").value = enteredMin;
-       document.getElementById("secs").value = enteredSec;
-      setReStart(true)
-
-      clearInterval(interval);
-
-
-     }
-
-       
+        startTimerrr()
+        Countdown()
+        toggleRunning()
       }}>
         Start
       </button>
@@ -127,4 +116,4 @@ function App() {
   );
 }
 
-export default App;
+export default Appp;

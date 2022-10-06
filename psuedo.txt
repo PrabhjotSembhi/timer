@@ -1,0 +1,4 @@
+Start timer on by clicking on start time
+time should be zero and display entered time when we clicked
+
+start it again from start
